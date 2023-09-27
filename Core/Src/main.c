@@ -95,7 +95,39 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+	uint8_t command = 0x9f;
+  uint8_t JEDEC[4];
+	uint8_t ID;
+	uint8_t n;
+	HAL_DMA_StateTypeDef spi_dma_sata;
+	
+	HAL_GPIO_WritePin(GPIOA, LDAC_Pin|CS_FLASH_Pin|CS_DAC_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, CS_FLASH_Pin, GPIO_PIN_RESET);
+	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+//	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+//	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+//	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+//	for(n=0;n<4;n++)
 
+	spi_dma_sata = HAL_DMA_GetState(hspi1.hdmarx);
+	
+	HAL_SPI_Receive_DMA(&hspi1,JEDEC,4);	
+	
+	spi_dma_sata = HAL_DMA_GetState(hspi1.hdmarx);
+	
+	HAL_GPIO_WritePin(GPIOA, CS_FLASH_Pin, GPIO_PIN_SET);
+	command = 0xAB;
+	HAL_GPIO_WritePin(GPIOA, CS_FLASH_Pin, GPIO_PIN_RESET);
+	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+	HAL_SPI_Transmit_DMA(&hspi1,&command,1);
+//	for(n=0;n<4;n++)
+	HAL_SPI_Receive_DMA(&hspi1,&ID,1);	
+	
+	HAL_GPIO_WritePin(GPIOA, CS_FLASH_Pin, GPIO_PIN_SET);	
+	
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
